@@ -1,13 +1,22 @@
 package com.danielqueiroz.forum.input;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.danielqueiroz.forum.model.Curso;
 import com.danielqueiroz.forum.model.Topico;
 import com.danielqueiroz.forum.repository.CursoRepository;
 
+
 public class TopicoInput {
 
+	@NotNull @NotEmpty @Length(min = 5)
 	private String titulo;
+	@NotNull @NotEmpty @Length(min = 5)
 	private String mensagem;
+	@NotNull @NotEmpty
 	private String nomeCurso;
 
 	public String getTitulo() {
