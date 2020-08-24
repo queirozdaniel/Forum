@@ -41,7 +41,7 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
-	@GetMapping
+	@GetMapping("/topicos")
 	@Cacheable(value = "listaDeTopicos")
 	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id", direction = Direction.DESC,size = 10, page = 0) Pageable paginacao) {
 		
@@ -77,7 +77,7 @@ public class TopicosController {
 	}
 	
 	@PutMapping("/{id}")
-	@CacheEvict(value = "listaDeTopicos", allEntries = true)
+	@Transactional
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizaTopicoInput input){
 		Optional<Topico> topico = topicoRepository.findById(id);
 		if (topico.isPresent()) {
@@ -88,6 +88,7 @@ public class TopicosController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@Transactional
 	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Long id){
 		topicoRepository.deleteById(id);
