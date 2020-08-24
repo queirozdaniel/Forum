@@ -6,11 +6,14 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +41,8 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
-	@GetMapping("/topicos")
+	@GetMapping
+	@Cacheable(value = "listaDeTopicos")
 	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id", direction = Direction.DESC,size = 10, page = 0) Pageable paginacao) {
 		
 		if (nomeCurso == null) {
@@ -52,6 +56,8 @@ public class TopicosController {
 	}
 	
 	@PostMapping
+	@Transactional
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoInput input, UriComponentsBuilder uriBuilder) {
 		Topico topico = input.converter(cursoRepository);
 		topicoRepository.save(topico);
@@ -71,6 +77,7 @@ public class TopicosController {
 	}
 	
 	@PutMapping("/{id}")
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizaTopicoInput input){
 		Optional<Topico> topico = topicoRepository.findById(id);
 		if (topico.isPresent()) {
@@ -81,6 +88,7 @@ public class TopicosController {
 	}
 	
 	@DeleteMapping("/{id}")
+	@CacheEvict(value = "listaDeTopicos", allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Long id){
 		topicoRepository.deleteById(id);
 		return ResponseEntity.ok().build();
