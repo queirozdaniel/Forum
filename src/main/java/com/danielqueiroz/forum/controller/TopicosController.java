@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -32,7 +33,8 @@ import com.danielqueiroz.forum.model.Topico;
 import com.danielqueiroz.forum.repository.CursoRepository;
 import com.danielqueiroz.forum.repository.TopicoRepository;
 
-@RestController("/topicos")
+@RestController
+@RequestMapping("/topicos")
 public class TopicosController {
 
 	@Autowired
@@ -41,7 +43,7 @@ public class TopicosController {
 	@Autowired
 	private CursoRepository cursoRepository;
 	
-	@GetMapping("/topicos")
+	@GetMapping
 	@Cacheable(value = "listaDeTopicos")
 	public Page<TopicoDto> lista(@RequestParam(required = false) String nomeCurso, @PageableDefault(sort = "id", direction = Direction.DESC,size = 10, page = 0) Pageable paginacao) {
 		
