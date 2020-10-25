@@ -23,8 +23,8 @@ public class TokenService {
 	
 	public String gerarToken(Authentication authenticate) {
 		Usuario usuario = (Usuario) authenticate.getPrincipal();
-		var date = new Date();
-		var dataExpiracao = new Date(date.getTime() + Long.parseLong(expiration));
+		Date date = new Date();
+		Date dataExpiracao = new Date(date.getTime() + Long.parseLong(expiration));
 
 		return Jwts.builder()
 				.setIssuer("API Forum")
